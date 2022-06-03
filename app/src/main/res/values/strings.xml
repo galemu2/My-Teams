@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Teams</string>
+    <string name="team_jersey">Team Jersey</string>
+    <string name="team_badge">Team Badge</string>
+    <string name="team_name">Team Name</string>
+    <string name="sport_name">Sport Name</string>
+    <string name="league_name">League Name</string>
+</resources>
