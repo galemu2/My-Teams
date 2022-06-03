@@ -1,4 +1,4 @@
-package com.example.myteams
+package com.example.myteams.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -11,8 +11,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.myteams.ui.favTeams.HandleTeamContent
 import com.example.myteams.ui.theme.MyTeamsTheme
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,32 +29,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    HandleTeamContent()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-
-@Preview(
-    showBackground = true,
-    name = "Night Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_YES
-)
-@Preview(
-    showBackground = true,
-    name = "Day Mode",
-    uiMode = Configuration.UI_MODE_NIGHT_NO
-)
-@Composable
-fun DefaultPreview() {
-    MyTeamsTheme {
-        Greeting("Android")
     }
 }

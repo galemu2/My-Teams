@@ -1,7 +1,6 @@
 package com.example.myteams.ui.favTeams
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -21,14 +20,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.myteams.BuildConfig
 import com.example.myteams.R
 import com.example.myteams.ui.theme.MyTeamsTheme
 import com.example.myteams.ui.theme.basicTextColor
@@ -42,6 +39,7 @@ fun HandleTeamContent(
 
     if (teamitesm.isEmpty()) {
         // todo display empty screen
+        DisplayTeams()
     } else {
         DisplayTeams()
     }
@@ -210,8 +208,12 @@ fun SportName(
 
     Text(
         modifier = modifier
+
             .padding(4.dp)
-            .wrapContentSize(),
+
+            .background(color = Color.Gray)
+            .fillMaxWidth()
+            .wrapContentHeight(),
         text = sportName,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
@@ -228,14 +230,19 @@ fun LeagueName(
 ) {
     Text(
         modifier = modifier
+
             .padding(4.dp)
-            .wrapContentSize(),
+
+            .background(color = Color.Gray)
+            .wrapContentHeight()
+            .fillMaxWidth(),
         text = leagueName,
         fontFamily = FontFamily.SansSerif,
         maxLines = 1,
         fontSize = 12.sp,
         overflow = TextOverflow.Ellipsis,
-        color = basicTextColor
+        color = basicTextColor,
+
 
     )
 
