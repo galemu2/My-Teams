@@ -1,6 +1,8 @@
 package com.example.myteams.ui.favTeams
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,7 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,45 +29,63 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.myteams.R
+import com.example.myteams.data.models.Team
+import com.example.myteams.data.models.Teams
+import com.example.myteams.ui.FavTeamsViewModel
 import com.example.myteams.ui.theme.MyTeamsTheme
 import com.example.myteams.ui.theme.basicTextColor
+import com.example.myteams.ui.theme.displayFavTeamBackground
 import com.example.myteams.ui.theme.teamNameColor
+import com.example.myteams.util.Resource
 
 
+@SuppressLint("UnrememberedMutableState", "StateFlowValueCalledInComposition")
 @Composable
 fun HandleTeamContent(
-    teamitesm: List<Int> = emptyList()
+    viewModel: FavTeamsViewModel,
 ) {
 
-    if (teamitesm.isEmpty()) {
-        // todo display empty screen
-        DisplayTeams()
+    var teamSearch by remember {
+        mutableStateOf(viewModel.searchTeam)
+    }
+
+
+    LaunchedEffect(key1 = viewModel.searchTeam, block = {
+        teamSearch = viewModel.searchTeam
+    })
+
+    if (teamSearch.value is Resource.Loading) {
+        LoadingContent()
+    } else if (teamSearch.value is Resource.Error) {
+        Text(text = "Error", fontSize = 40.sp)
+    } else if (teamSearch.value is Resource.Success) {
+        DisplayFavTeams(teams = (teamSearch.value as Resource.Success<Teams>).data!!.teams)
     } else {
-        DisplayTeams()
+        EmptyContent()
     }
 }
 
 
 @Composable
-fun DisplayTeams(teamitesm: List<Int> = emptyList()) {
+fun DisplayFavTeams(teams: List<Team>) {
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier,
+    ) {
         items(
-            items = listOf<Int>(1, 2, 3), // Todo update the list of items
+            items = teams, // Todo update the list of items
 
-        ) { item ->
+        ) { team ->
 
-            TeamItem()
+            TeamItem(team = team)
 
         }
     }
 }
 
 @Composable
-fun TeamItem(modifier: Modifier = Modifier) {
+fun TeamItem(modifier: Modifier = Modifier, team: Team) {
 
-
-    //             .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)
     Row(
         modifier = Modifier
             .padding(4.dp)
@@ -76,38 +96,56 @@ fun TeamItem(modifier: Modifier = Modifier) {
                 RoundedCornerShape(4.dp)
             )
             .fillMaxWidth()
-            .background(color = Color.Transparent)
+            .background(color = displayFavTeamBackground)
             .height(100.dp)
     ) {
 
-        TeamBadge(modifier = Modifier.weight(1f))
+        TeamBadge(
+            modifier = Modifier.weight(1f),
+            badge = team.strTeamBadge
+        )
 
         Column(
-            modifier = Modifier.weight(4f),
+            modifier = Modifier
+                .padding(4.dp)
+                .weight(4f),
         ) {
-            TeamName(modifier = Modifier.weight(2f))
-            SportName(modifier = Modifier.weight(1f))
-            LeagueName(modifier = Modifier.weight(1f))
+            TeamName(
+                modifier = Modifier.weight(2f),
+                name = team.strTeam
+            )
+            SportName(
+                modifier = Modifier.weight(1f),
+                sportName = team.strSport
+            )
+            LeagueName(
+                modifier = Modifier.weight(1f),
+                leagueName = team.strLeague
+            )
         }
 
-        TeamJersey(modifier = Modifier.weight(1f))
+        TeamJersey(
+            modifier = Modifier.weight(1f),
+            teamJersey = team.strTeamJersey
+        )
     }
 }
 
 @Composable
-fun TeamJersey(modifier: Modifier = Modifier) {
+fun TeamJersey(modifier: Modifier = Modifier, teamJersey: String = "") {
 
     val context = LocalContext.current
 
+    val placeHolder: Painter = painterResource(id = R.drawable.placeholder_jersey)
+    val description = stringResource(id = R.string.team_jersey)
     // todo stateless component that takes in string to load image
     val model = ImageRequest
         .Builder(context)
-        .data("https://www.thesportsdb.com/images/media/team/jersey/0006oc1626543801.png/preview")
+        .data(teamJersey)
         .crossfade(true)
         .build()
 
-    val placeHolder: Painter = painterResource(id = R.drawable.placeholder_jersey)
-    val description = stringResource(id = R.string.team_jersey)
+
 
 
     Box(
@@ -135,6 +173,7 @@ fun TeamJersey(modifier: Modifier = Modifier) {
             contentDescription = description,
             placeholder = placeHolder,
             fallback = placeHolder,
+            error = placeHolder,
             contentScale = ContentScale.Fit
         )
     }
@@ -142,14 +181,14 @@ fun TeamJersey(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun TeamBadge(modifier: Modifier = Modifier) {
+fun TeamBadge(modifier: Modifier = Modifier, badge: String = "") {
 
     val context = LocalContext.current
 
     // todo stateless componenet that takes in string to load image
     val model = ImageRequest
         .Builder(context)
-        .data("https://www.thesportsdb.com/images/media/team/badge/uyhbfe1612467038.png/preview")
+        .data(badge)
         .crossfade(true)
         .build()
 
@@ -190,12 +229,15 @@ fun TeamName(
 
     Text(
         modifier = modifier
-            .padding(4.dp)
             .fillMaxWidth()
             .wrapContentHeight()
-            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp)),
+            .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp))
+            .padding(4.dp),
         text = name,
-        fontSize = 30.sp, fontFamily = FontFamily.Serif,
+        fontSize = 30.sp,
+        fontFamily = FontFamily.Serif,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
         color = teamNameColor
     )
 }
@@ -208,17 +250,14 @@ fun SportName(
 
     Text(
         modifier = modifier
-
-            .padding(4.dp)
-
-            .background(color = Color.Gray)
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .padding(4.dp),
         text = sportName,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         fontFamily = FontFamily.SansSerif,
-        fontSize = 12.sp,
+        fontSize = 18.sp,
         color = basicTextColor
     )
 }
@@ -230,24 +269,22 @@ fun LeagueName(
 ) {
     Text(
         modifier = modifier
-
-            .padding(4.dp)
-
-            .background(color = Color.Gray)
             .wrapContentHeight()
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(4.dp),
         text = leagueName,
         fontFamily = FontFamily.SansSerif,
         maxLines = 1,
-        fontSize = 12.sp,
+        fontSize = 10.sp,
         overflow = TextOverflow.Ellipsis,
         color = basicTextColor,
 
 
-    )
+        )
 
 }
 
+/*
 @Preview(
     showBackground = false,
     name = "Night Mode",
@@ -261,7 +298,7 @@ fun LeagueName(
 @Composable
 fun PreviewTeamBadge() {
     MyTeamsTheme {
-        DisplayTeams()
+        SportName()
     }
 }
- 
+ */

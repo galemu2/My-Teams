@@ -2,8 +2,8 @@ package com.example.myteams.data
 
 import com.example.myteams.BuildConfig
 import com.example.myteams.data.models.Teams
+import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Query
 
 interface SportsApi {
@@ -17,13 +17,8 @@ interface SportsApi {
     suspend fun getTeams(
         @Query("t")
         query: String,
-    ):Teams
+    ): Response<Teams>
 
 }
-
-/*
-*         @Query("APIKEY")
-        apiKey: String = API_KEY
-        * */
 
 // API: https://www.thesportsdb.com/api/v1/json/50130162/searchteams.php?t=Arsenal

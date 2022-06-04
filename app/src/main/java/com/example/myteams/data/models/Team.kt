@@ -68,9 +68,7 @@ data class Team(
     val strTwitter: String,
     val strWebsite: String,
     val strYoutube: String
-)
-
-{
+) {
     override fun toString(): String {
         return "$strTeam: $strSport: $strLeague"
     }

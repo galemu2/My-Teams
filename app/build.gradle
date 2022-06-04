@@ -79,4 +79,8 @@ dependencies {
     // Dagger-Hilt
     implementation 'com.google.dagger:hilt-android:2.42'
     kapt 'com.google.dagger:hilt-compiler:2.42'
+
+    // navigation animation todo
+    implementation 'com.google.accompanist:accompanist-navigation-animation:0.21.2-beta'
+
 }
