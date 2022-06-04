@@ -19,7 +19,7 @@ data class Team(
     val strCountry: String,
     val strDescriptionCN: Any,
     val strDescriptionDE: String,
-    val strDescriptionEN: String,
+    val strDescriptionEN: String,  // maybe
     val strDescriptionES: String,
     val strDescriptionFR: String,
     val strDescriptionHU: Any,
@@ -69,3 +69,9 @@ data class Team(
     val strWebsite: String,
     val strYoutube: String
 )
+
+{
+    override fun toString(): String {
+        return "$strTeam: $strSport: $strLeague"
+    }
+}
