@@ -9,7 +9,9 @@ import com.example.myteams.ui.FavTeamsViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun FavTeamScreen(viewModel: FavTeamsViewModel) {
+fun FavTeamScreen(
+    viewModel: FavTeamsViewModel, navigateToTeamDetails: () -> Unit
+) {
 
     val searchAppBarOpenState by viewModel.searchAppBarOpenState
     val searchTextState by viewModel.searchTextState
@@ -23,7 +25,7 @@ fun FavTeamScreen(viewModel: FavTeamsViewModel) {
     }) {
         FavTeamContent(
             viewModel = viewModel,
-            searchAppBarOpenState = searchAppBarOpenState
+            navigateToTeamDetails = navigateToTeamDetails
         )
     }
 }
@@ -31,13 +33,12 @@ fun FavTeamScreen(viewModel: FavTeamsViewModel) {
 
 @Composable
 fun FavTeamContent(
-    viewModel: FavTeamsViewModel, searchAppBarOpenState: Boolean
+    viewModel: FavTeamsViewModel,
+    navigateToTeamDetails: () -> Unit
 ) {
-    // todo handle when search is triggered
-
 
     HandleTeamContent(
         viewModel = viewModel,
-        searchAppBarOpenState = searchAppBarOpenState
+        navigateToTeamDetails = navigateToTeamDetails
     )
 }

@@ -1,6 +1,5 @@
 package com.example.myteams.ui
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -39,7 +38,6 @@ class FavTeamsViewModel @Inject constructor(
         get() = _searchTeam
 
     fun searchFavTeam(searchQuery: String = "fc") {
-        Log.d("TAG", "searchFavTeam: $searchQuery")
         viewModelScope.launch {
             val res = repository.getTeams(query = searchQuery)
             _searchTeam.value = handleTeamSearch(res)
@@ -49,6 +47,7 @@ class FavTeamsViewModel @Inject constructor(
     private fun handleTeamSearch(res: Response<Teams>): Resource<Teams> {
         if (res.isSuccessful) {
             res.body()?.let { teams ->
+
                 return Resource.Success(teams)
             }
         }

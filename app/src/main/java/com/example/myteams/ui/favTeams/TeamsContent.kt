@@ -1,8 +1,8 @@
 package com.example.myteams.ui.favTeams
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,36 +37,44 @@ import com.example.myteams.ui.theme.teamNameColor
 import com.example.myteams.util.Resource
 
 
-@SuppressLint("UnrememberedMutableState", "StateFlowValueCalledInComposition")
 @Composable
 fun HandleTeamContent(
     viewModel: FavTeamsViewModel,
-    searchAppBarOpenState: Boolean,
+    navigateToTeamDetails: () -> Unit
 ) {
 
     var teamSearch = remember {
         viewModel.searchTeam
     }
 
-
     LaunchedEffect(key1 = viewModel.searchTeam, block = {
         teamSearch = viewModel.searchTeam
     })
 
-    if (teamSearch.value is Resource.Loading) {
-        EmptyContent()
-    } else if (teamSearch.value is Resource.Error) {
-        ErrorContent()
-    } else if (teamSearch.value is Resource.Success) {
-        (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { DisplayFavTeams(teams = it) }
-    } else {
-        LoadingContent()
+    when (teamSearch.value) {
+        is Resource.Loading -> {
+            EmptyContent()
+        }
+        is Resource.Error -> {
+            ErrorContent()
+        }
+        is Resource.Success -> {
+            (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
+                DisplayFavTeams(
+                    teams = teams,
+                    navigateToTeamDetails = navigateToTeamDetails
+                )
+            }
+        }
     }
 }
 
 
 @Composable
-fun DisplayFavTeams(teams: List<Team>) {
+fun DisplayFavTeams(
+    teams: List<Team>,
+    navigateToTeamDetails: () -> Unit
+) {
 
     LazyColumn(
         modifier = Modifier,
@@ -74,13 +82,22 @@ fun DisplayFavTeams(teams: List<Team>) {
         items(
             items = teams,
         ) { team ->
-            TeamItem(team = team)
+            TeamItem(
+                team = team,
+                navigateToTeamDetails = navigateToTeamDetails
+            )
         }
     }
 }
 
 @Composable
-fun TeamItem(modifier: Modifier = Modifier, team: Team) {
+fun TeamItem(
+    modifier: Modifier = Modifier,
+    team: Team,
+    navigateToTeamDetails: () -> Unit
+) {
+
+    val context = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -94,7 +111,11 @@ fun TeamItem(modifier: Modifier = Modifier, team: Team) {
             .fillMaxWidth()
             .background(color = displayFavTeamBackground)
             .height(100.dp)
-    ) {
+            .clickable {
+                navigateToTeamDetails()
+            },
+
+        ) {
 
         TeamBadge(
             modifier = Modifier.weight(1f),
@@ -175,7 +196,6 @@ fun TeamJersey(modifier: Modifier = Modifier, teamJersey: String = "") {
     }
 }
 
-
 @Composable
 fun TeamBadge(modifier: Modifier = Modifier, badge: String = "") {
 
@@ -215,7 +235,6 @@ fun TeamBadge(modifier: Modifier = Modifier, badge: String = "") {
         )
     }
 }
-
 
 @Composable
 fun TeamName(
