@@ -3,6 +3,7 @@ package com.example.myteams.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.LightGray
 
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -26,3 +27,13 @@ val basicTextColor: Color
 val displayFavTeamBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.DarkGray else PurpleGrey80
+
+
+val topAppBarContentColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.White else LightGray
+
+
+val topAppBarBackgroundColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) Color.Black else PurpleGrey40

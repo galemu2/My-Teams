@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myteams.R
 import com.example.myteams.ui.theme.MediumGray
+
 
 @Composable
 fun EmptyContent() {
@@ -47,7 +47,6 @@ fun EmptyContent() {
     }
 }
 
-@Preview
 @Composable
 fun LoadingContent() {
 
@@ -68,3 +67,31 @@ fun LoadingContent() {
 
     }
 }
+
+@Composable
+fun ErrorContent() {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Icon(
+            modifier = Modifier.size(240.dp),
+            painter = painterResource(id = R.drawable.ic_error),
+            contentDescription = stringResource(id = R.string.empty_team_list),
+            tint = MediumGray
+        )
+        Text(
+            text = stringResource(id = R.string.error),
+            color = MediumGray,
+            fontWeight = FontWeight.Bold,
+            fontSize = 40.sp
+        )
+
+    }
+}
+

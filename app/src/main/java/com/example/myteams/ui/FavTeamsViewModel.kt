@@ -1,6 +1,8 @@
 package com.example.myteams.ui
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myteams.data.models.Teams
@@ -30,14 +32,17 @@ class FavTeamsViewModel @Inject constructor(
         searchFavTeam()
     }
 
+    val searchTextState: MutableState<String> = mutableStateOf("")
+    val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
+
     private val _searchTeam = MutableStateFlow<Resource<Teams>>(Resource.Loading())
 
     val searchTeam: StateFlow<Resource<Teams>>
         get() = _searchTeam
 
-    fun searchFavTeam() {
+    fun searchFavTeam(searcQuery: String = "fc") {
         viewModelScope.launch {
-            val res = repository.getTeams(query = "fc")
+            val res = repository.getTeams(query = searcQuery)
             Log.d("CustomTAG", "searchFavTeam: ${res.message()} ")
             _searchTeam.value = handleTeamSearch(res)
         }

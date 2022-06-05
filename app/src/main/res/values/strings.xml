@@ -8,4 +8,7 @@
 
     <string name="empty_team_list">Empty</string>
     <string name="no_teams">No Teams</string>
+    <string name="error">Error</string>
+    <string name="my_teams">My Teams</string>
+    <string name="search_teams">Search Team</string>
 </resources>

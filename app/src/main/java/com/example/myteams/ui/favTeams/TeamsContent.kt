@@ -1,8 +1,6 @@
 package com.example.myteams.ui.favTeams
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -23,7 +21,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -32,7 +29,6 @@ import com.example.myteams.R
 import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.ui.FavTeamsViewModel
-import com.example.myteams.ui.theme.MyTeamsTheme
 import com.example.myteams.ui.theme.basicTextColor
 import com.example.myteams.ui.theme.displayFavTeamBackground
 import com.example.myteams.ui.theme.teamNameColor
@@ -57,7 +53,7 @@ fun HandleTeamContent(
     if (teamSearch.value is Resource.Loading) {
         LoadingContent()
     } else if (teamSearch.value is Resource.Error) {
-        Text(text = "Error", fontSize = 40.sp)
+        ErrorContent()
     } else if (teamSearch.value is Resource.Success) {
         DisplayFavTeams(teams = (teamSearch.value as Resource.Success<Teams>).data!!.teams)
     } else {
@@ -73,7 +69,7 @@ fun DisplayFavTeams(teams: List<Team>) {
         modifier = Modifier,
     ) {
         items(
-            items = teams, // Todo update the list of items
+            items = teams,
 
         ) { team ->
 
