@@ -1,5 +1,6 @@
 package com.example.myteams.ui.favTeams
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,8 +41,9 @@ import com.example.myteams.util.Resource
 @Composable
 fun HandleTeamContent(
     viewModel: FavTeamsViewModel,
-    navigateToTeamDetails: () -> Unit
 ) {
+
+    val context = LocalContext.current
 
     var teamSearch = remember {
         viewModel.searchTeam
@@ -62,8 +64,13 @@ fun HandleTeamContent(
             (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
                 DisplayFavTeams(
                     teams = teams,
-                    navigateToTeamDetails = navigateToTeamDetails
-                )
+                ) { selectedTeam ->
+                    Toast.makeText(
+                        context,
+                        "${selectedTeam.idTeam}, ${selectedTeam.strTeam}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -73,7 +80,7 @@ fun HandleTeamContent(
 @Composable
 fun DisplayFavTeams(
     teams: List<Team>,
-    navigateToTeamDetails: () -> Unit
+    saveSelectedTeam: (Team) -> Unit
 ) {
 
     LazyColumn(
@@ -84,7 +91,7 @@ fun DisplayFavTeams(
         ) { team ->
             TeamItem(
                 team = team,
-                navigateToTeamDetails = navigateToTeamDetails
+                saveSelectedTeam = saveSelectedTeam
             )
         }
     }
@@ -94,7 +101,7 @@ fun DisplayFavTeams(
 fun TeamItem(
     modifier: Modifier = Modifier,
     team: Team,
-    navigateToTeamDetails: () -> Unit
+    saveSelectedTeam: (Team) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -112,7 +119,7 @@ fun TeamItem(
             .background(color = displayFavTeamBackground)
             .height(100.dp)
             .clickable {
-                navigateToTeamDetails()
+                saveSelectedTeam(team)
             },
 
         ) {

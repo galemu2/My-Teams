@@ -4,11 +4,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myteams.ui.FavTeamsViewModel
-import com.example.myteams.ui.teamDetails.TeamDetailsScreen
+import com.example.myteams.ui.teamDetails.TeamHistoryScreen
 import com.example.myteams.util.Constants
 
 
-fun NavGraphBuilder.teamDetailsComposable(
+fun NavGraphBuilder.teamHistoryComposable(
     viewModel: FavTeamsViewModel,
     navController: NavHostController
 ) {
@@ -21,7 +21,7 @@ fun NavGraphBuilder.teamDetailsComposable(
             type = NavType.IntType
         })*/
     ) {
-        TeamDetailsScreen(
+        TeamHistoryScreen(
             viewModel = viewModel,
             navController = navController
         )

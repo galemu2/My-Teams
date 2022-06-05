@@ -14,14 +14,12 @@ import com.example.myteams.util.Constants
 fun NavGraphBuilder.favTeamComposable(
     viewModel: FavTeamsViewModel,
     navController: NavHostController,
-    navigateToTeamDetails: () -> Unit
 ) {
     composable(
         route = Constants.FAV_TEAMS,
     ) {
         FavTeamScreen(
             viewModel = viewModel,
-            navigateToTeamDetails = navigateToTeamDetails
         )
     }
 }

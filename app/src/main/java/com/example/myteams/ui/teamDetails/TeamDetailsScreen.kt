@@ -19,7 +19,7 @@ import com.example.myteams.ui.FavTeamsViewModel
 import com.example.myteams.ui.favTeams.TeamItem
 
 @Composable
-fun TeamDetailsScreen(
+fun TeamHistoryScreen(
     viewModel: FavTeamsViewModel,
     navController: NavHostController
 ) {
@@ -45,7 +45,7 @@ fun TeamDetailsScreen(
 
 @Composable
 fun TeamDetailsContent(
-    modifier: Modifier = Modifier, team: Team, navigateToTeamDetails: () -> Unit
+    modifier: Modifier = Modifier, team: Team, saveSelectedTeam: (Team) -> Unit
 ) {
 
     Column(
@@ -55,7 +55,7 @@ fun TeamDetailsContent(
 
         TeamItem(
             team = team,
-            navigateToTeamDetails = navigateToTeamDetails
+            saveSelectedTeam = saveSelectedTeam
         )
         Text(
             modifier = Modifier
