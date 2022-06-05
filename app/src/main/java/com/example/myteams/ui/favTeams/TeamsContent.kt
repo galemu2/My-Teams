@@ -9,7 +9,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,10 +41,11 @@ import com.example.myteams.util.Resource
 @Composable
 fun HandleTeamContent(
     viewModel: FavTeamsViewModel,
+    searchAppBarOpenState: Boolean,
 ) {
 
-    var teamSearch by remember {
-        mutableStateOf(viewModel.searchTeam)
+    var teamSearch = remember {
+        viewModel.searchTeam
     }
 
 
@@ -51,13 +54,13 @@ fun HandleTeamContent(
     })
 
     if (teamSearch.value is Resource.Loading) {
-        LoadingContent()
+        EmptyContent()
     } else if (teamSearch.value is Resource.Error) {
         ErrorContent()
     } else if (teamSearch.value is Resource.Success) {
-        DisplayFavTeams(teams = (teamSearch.value as Resource.Success<Teams>).data!!.teams)
+        (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { DisplayFavTeams(teams = it) }
     } else {
-        EmptyContent()
+        LoadingContent()
     }
 }
 
@@ -70,11 +73,8 @@ fun DisplayFavTeams(teams: List<Team>) {
     ) {
         items(
             items = teams,
-
         ) { team ->
-
             TeamItem(team = team)
-
         }
     }
 }

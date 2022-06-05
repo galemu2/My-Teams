@@ -9,8 +9,6 @@ import com.example.myteams.data.models.Teams
 import com.example.myteams.repositories.SportsRepository
 import com.example.myteams.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -29,21 +27,21 @@ class FavTeamsViewModel @Inject constructor(
 
     init {
         // todo load saved teams
-        searchFavTeam()
+        // searchFavTeam()
     }
 
     val searchTextState: MutableState<String> = mutableStateOf("")
     val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
 
-    private val _searchTeam = MutableStateFlow<Resource<Teams>>(Resource.Loading())
+    private val _searchTeam = mutableStateOf<Resource<Teams>>(Resource.Loading())
 
-    val searchTeam: StateFlow<Resource<Teams>>
+    val searchTeam: MutableState<Resource<Teams>>
         get() = _searchTeam
 
-    fun searchFavTeam(searcQuery: String = "fc") {
+    fun searchFavTeam(searchQuery: String = "fc") {
+        Log.d("TAG", "searchFavTeam: $searchQuery")
         viewModelScope.launch {
-            val res = repository.getTeams(query = searcQuery)
-            Log.d("CustomTAG", "searchFavTeam: ${res.message()} ")
+            val res = repository.getTeams(query = searchQuery)
             _searchTeam.value = handleTeamSearch(res)
         }
     }
@@ -54,8 +52,6 @@ class FavTeamsViewModel @Inject constructor(
                 return Resource.Success(teams)
             }
         }
-
-        Log.d("TAG", "handleTeamSearch: ${res.message()} ")
         return Resource.Error(message = res.message())
     }
 

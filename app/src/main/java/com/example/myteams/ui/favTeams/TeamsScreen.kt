@@ -7,10 +7,9 @@ import androidx.compose.runtime.getValue
 import com.example.myteams.ui.FavTeamsViewModel
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 @Composable
 fun FavTeamScreen(viewModel: FavTeamsViewModel) {
-
 
     val searchAppBarOpenState by viewModel.searchAppBarOpenState
     val searchTextState by viewModel.searchTextState
@@ -22,14 +21,23 @@ fun FavTeamScreen(viewModel: FavTeamsViewModel) {
             searchTextState = searchTextState
         )
     }) {
-        FavTeamContent(viewModel = viewModel)
+        FavTeamContent(
+            viewModel = viewModel,
+            searchAppBarOpenState = searchAppBarOpenState
+        )
     }
 }
 
 
 @Composable
-fun FavTeamContent(viewModel: FavTeamsViewModel) {
+fun FavTeamContent(
+    viewModel: FavTeamsViewModel, searchAppBarOpenState: Boolean
+) {
     // todo handle when search is triggered
 
-    HandleTeamContent(viewModel = viewModel)
+
+    HandleTeamContent(
+        viewModel = viewModel,
+        searchAppBarOpenState = searchAppBarOpenState
+    )
 }

@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -22,6 +23,7 @@ import com.example.myteams.ui.FavTeamsViewModel
 import com.example.myteams.ui.theme.TOP_APP_BAR_HEIGHT
 import com.example.myteams.ui.theme.topAppBarBackgroundColor
 import com.example.myteams.ui.theme.topAppBarContentColor
+import com.example.myteams.util.Resource
 
 
 @Composable
@@ -41,9 +43,10 @@ fun TeamsAppBar(
             onCloseClicked = {
                 viewModel.searchAppBarOpenState.value = false
                 viewModel.searchTextState.value = ""
+                viewModel.searchTeam.value = Resource.Loading() // todo show saved teams
             },
             onSearchClicked = { searchQuery ->
-                viewModel.searchFavTeam(searcQuery = searchQuery)
+                viewModel.searchFavTeam(searchQuery = searchQuery)
             }
         )
     } else {
@@ -57,7 +60,6 @@ fun TeamsAppBar(
 fun DefaultTeamsAppBar(
     onSearchClicked: () -> Unit
 ) {
-
 
     TopAppBar(
         title = {
@@ -81,6 +83,8 @@ fun SearchTeamAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
+
+    val context = LocalContext.current
 
     Surface(
         modifier = Modifier
@@ -134,8 +138,12 @@ fun SearchTeamAppBar(
             },
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(
-                onSearch = { onSearchClicked(text) }
-            ),
+                onSearch = {
+                    onSearchClicked(text)
+
+                },
+
+                ),
             colors = TextFieldDefaults.textFieldColors(
                 cursorColor = topAppBarContentColor,
                 focusedIndicatorColor = Color.Transparent,
