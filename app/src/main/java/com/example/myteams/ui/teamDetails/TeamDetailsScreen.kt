@@ -16,7 +16,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
-import com.example.myteams.ui.favTeams.TeamItem
 
 @Composable
 fun TeamHistoryScreen(
@@ -53,10 +52,10 @@ fun TeamDetailsContent(
             .fillMaxSize()
     ) {
 
-        TeamItem(
+/*        TeamItem(
             team = team,
-            saveSelectedTeam = saveSelectedTeam
-        )
+            viewModel = viewModel
+        )*/
         Text(
             modifier = Modifier
                 .fillMaxWidth()

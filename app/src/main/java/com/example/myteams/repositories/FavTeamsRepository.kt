@@ -12,7 +12,7 @@ class FavTeamsRepository @Inject constructor(
 ) {
 
 
-    val getAllFavTeams: Flow<List<FavTeam>> = dao.getAllFavTeams()
+    var getAllFavTeams: Flow<List<FavTeam>> = dao.getAllFavTeams()
 
     suspend fun addFavTeam(favTeam: FavTeam) {
         dao.insertFavTeam(favTeam = favTeam)

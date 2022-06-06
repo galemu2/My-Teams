@@ -11,4 +11,10 @@
     <string name="error">Error</string>
     <string name="my_teams">My Teams</string>
     <string name="search_teams">Search Team</string>
+    <string name="save_team">Save Team</string>
+    <string name="save_slected_team">Save team to favorite list</string>
+
+
+    <string name="cancel">Cancel</string>
+    <string name="select">Ok</string>
 </resources>

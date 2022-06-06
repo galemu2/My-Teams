@@ -1,6 +1,5 @@
 package com.example.myteams.ui.favTeams
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,6 +9,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -37,14 +39,13 @@ import com.example.myteams.ui.theme.displayFavTeamBackground
 import com.example.myteams.ui.theme.teamNameColor
 import com.example.myteams.util.Resource
 
-
+@ExperimentalMaterial3Api
 @Composable
 fun HandleTeamContent(
     viewModel: SportsTeamViewModel,
 ) {
 
-    val favTeams by viewModel.favTeams.collectAsState(emptyList())
-
+    var favTeams by remember { mutableStateOf(emptyList<FavTeam>()) }
 
     val context = LocalContext.current
 
@@ -57,47 +58,39 @@ fun HandleTeamContent(
     })
 
     LaunchedEffect(key1 = viewModel.favTeams, block = {
-        Log.d("TAG", "HandleTeamContent: ${favTeams.size}")
+        viewModel.favTeams.collect {
+            favTeams = it
+        }
     })
-    when (teamSearch.value) {
-        is Resource.Loading -> {
-            EmptyContent()
-        }
-        is Resource.Error -> {
-            ErrorContent()
-        }
-        is Resource.Success -> {
-            (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
-                DisplayFavTeams(
-                    teams = teams,
-                ) { selectedTeam ->
-                    val favTam = FavTeam(
-                        idTeam = selectedTeam.idTeam,
-                        strDescriptionEN = selectedTeam.strDescriptionEN,
-                        strSport = selectedTeam.strSport,
-                        strLeague = selectedTeam.strLeague,
-                        strTeam = selectedTeam.strTeam,
-                        strTeamBadge = selectedTeam.strTeamBadge,
-                        strTeamJersey = selectedTeam.strTeamJersey
-                    )
 
-                    viewModel.addFavTeam(favTeam = favTam)
-                    Toast.makeText(
-                        context,
-                        "${selectedTeam.idTeam}, ${selectedTeam.strTeam}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+    if (viewModel.searchAppBarOpenState.value) {
+        when (teamSearch.value) {
+            is Resource.Loading -> {
+                EmptyContent()
+            }
+            is Resource.Error -> {
+                ErrorContent()
+            }
+            is Resource.Success -> {
+                (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
+                    DisplayFavTeams(
+                        teams = teams,
+                        viewModel = viewModel
+                    )
                 }
             }
         }
+    } else {
+        Text(text = "my teams", fontSize = 40.sp)
     }
+
 }
 
 
 @Composable
 fun DisplayFavTeams(
     teams: List<Team>,
-    saveSelectedTeam: (Team) -> Unit
+    viewModel: SportsTeamViewModel,
 ) {
 
     LazyColumn(
@@ -108,9 +101,65 @@ fun DisplayFavTeams(
         ) { team ->
             TeamItem(
                 team = team,
-                saveSelectedTeam = saveSelectedTeam
+                viewModel = viewModel
             )
         }
+    }
+}
+
+
+@Composable
+fun SelectFavTeamDialog(
+    openDialogState: Boolean,
+    updateDialogState: (Boolean) -> Unit,
+    insertToDatabase: () -> Unit,
+) {
+
+    if (openDialogState)
+        AlertDialog(
+            onDismissRequest = {
+                updateDialogState(false)
+            },
+            title = {
+                Text(text = stringResource(id = R.string.save_team))
+            },
+            text = {
+                Text(text = stringResource(id = R.string.save_slected_team))
+            },
+            buttons = {
+                Row(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    MyButton(
+                        updateDialogState = updateDialogState,
+                        text = stringResource(id = R.string.cancel)
+                    ) {}
+                    MyButton(
+                        updateDialogState,
+                        text = stringResource(id = R.string.select),
+                        insertToDatabase = insertToDatabase
+                    )
+                }
+            }
+        )
+}
+
+@Composable
+private fun MyButton(
+    updateDialogState: (Boolean) -> Unit,
+    text: String,
+    insertToDatabase: () -> Unit
+) {
+    Button(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(8.dp),
+        onClick = {
+            updateDialogState(false)
+            insertToDatabase()
+        }) {
+        Text(text = text)
     }
 }
 
@@ -118,10 +167,40 @@ fun DisplayFavTeams(
 fun TeamItem(
     modifier: Modifier = Modifier,
     team: Team,
-    saveSelectedTeam: (Team) -> Unit
+    viewModel: SportsTeamViewModel,
 ) {
 
     val context = LocalContext.current
+
+    var dialogState by remember { mutableStateOf(false) }
+
+    if (dialogState) {
+        SelectFavTeamDialog(
+            openDialogState = dialogState,
+            updateDialogState = { dialogState = it },
+        ) {
+
+
+            val favTam = FavTeam(
+                idTeam = team.idTeam,
+                strDescriptionEN = team.strDescriptionEN,
+                strSport = team.strSport,
+                strLeague = team.strLeague,
+                strTeam = team.strTeam,
+                strTeamBadge = team.strTeamBadge,
+                strTeamJersey = team.strTeamJersey
+            )
+
+            viewModel.addFavTeam(favTeam = favTam)
+
+            Toast.makeText(
+                context,
+                "${team.idTeam}, ${team.strTeam}",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
 
     Row(
         modifier = Modifier
@@ -136,7 +215,7 @@ fun TeamItem(
             .background(color = displayFavTeamBackground)
             .height(100.dp)
             .clickable {
-                saveSelectedTeam(team)
+                dialogState = true
             },
 
         ) {

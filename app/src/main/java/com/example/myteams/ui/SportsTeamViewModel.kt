@@ -48,10 +48,10 @@ class SportsTeamViewModel @Inject constructor(
         return Resource.Error(message = res.message())
     }
 
-    val favTeams: StateFlow<List<FavTeam>> = favTeamsRepository
+    var favTeams: StateFlow<List<FavTeam>> = favTeamsRepository
         .getAllFavTeams.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(1000),
+            started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList()
         )
 
