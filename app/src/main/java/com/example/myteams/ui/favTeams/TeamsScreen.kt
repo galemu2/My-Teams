@@ -30,6 +30,14 @@ fun FavTeamScreen(
     var snackBarState by remember { mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
 
+    var teamToBeDeleted by remember {
+        viewModel.teamTobeDeleted
+    }
+
+    LaunchedEffect(key1 = true, block = {
+        teamToBeDeleted = viewModel.teamTobeDeleted.value
+
+    })
     SportsSnackBar(
         snackBarState = snackBarState,
         scaffoldState = scaffoldState,
@@ -37,9 +45,10 @@ fun FavTeamScreen(
             snackBarState = it
         },
         unDoAction = {
-            if (viewModel.teamTobeDeleted.value != null) {
-                viewModel.addFavTeam(viewModel.teamTobeDeleted.value!!)
+            if (teamToBeDeleted != null) {
+                viewModel.addFavTeam(teamToBeDeleted!!)
                 viewModel.teamTobeDeleted.value = null
+                scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
             } else {
                 Toast.makeText(context, unknownError, Toast.LENGTH_SHORT).show()
             }
@@ -88,10 +97,8 @@ fun SportsSnackBar(
                         actionLabel = undo
                     )
 
-                    delay(300)
                     updateSnackBarState(false)
                     if (snackBarResult == SnackbarResult.ActionPerformed) {
-
                         unDoAction()
                     }
                 }

@@ -103,48 +103,52 @@ fun DisplayFavTeams(
     displaySnackBar: (Team) -> Unit,
     displayTeamHistory: (String) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = contentBackground),
-    ) {
-        items(
-            items = favTeams,
-            key = { team -> team.idTeam }
-        ) { team ->
 
-            val dismissState = rememberDismissState()
-            val dismissDirection = dismissState.dismissDirection
-            val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
-            if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                // delete from database
-                viewModel.deleteFavTeam(favTeam = team)
-                displaySnackBar(team)
-            }
+    if (favTeams.isEmpty()) {
+        EmptyFavesContent()
+    } else
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = contentBackground),
+        ) {
+            items(
+                items = favTeams,
+                key = { team -> team.idTeam }
+            ) { team ->
+
+                val dismissState = rememberDismissState()
+                val dismissDirection = dismissState.dismissDirection
+                val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
+                if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
+                    // delete from database
+                    viewModel.deleteFavTeam(favTeam = team)
+                    displaySnackBar(team)
+                }
 
 
-            SwipeToDismiss(
-                state = dismissState,
-                directions = setOf(DismissDirection.EndToStart),
-                dismissThresholds = { FractionalThreshold(fraction = 0.3f) },
-                background = {
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxSize()
-                            .background(Color.DarkGray)
+                SwipeToDismiss(
+                    state = dismissState,
+                    directions = setOf(DismissDirection.EndToStart),
+                    dismissThresholds = { FractionalThreshold(fraction = 0.3f) },
+                    background = {
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxSize()
+                                .background(Color.DarkGray)
+                        )
+                    }
+                ) {
+                    TeamItemFaves(
+                        team = team,
+                        viewModel = viewModel,
+                        displayTeamHistory = displayTeamHistory
                     )
                 }
-            ) {
-                TeamItemFaves(
-                    team = team,
-                    viewModel = viewModel,
-                    displayTeamHistory = displayTeamHistory
-                )
-            }
 
+            }
         }
-    }
 }
 
 
