@@ -46,12 +46,14 @@ class SportsTeamViewModel @Inject constructor(
     val teamMatches: MutableState<Resource<Matches>>
         get() = _teamMatches
 
-    fun listMatches(matchId:String){
+    fun getTeamMatchHistory(matchId: String) {
+
         viewModelScope.launch {
             val res = repository.getMatches(matchId = matchId)
             _teamMatches.value = handleMatchSearchSearch(res)
         }
     }
+
 
     private fun handleMatchSearchSearch(res: Response<Matches>): Resource<Matches> {
         if (res.isSuccessful) {
@@ -80,7 +82,6 @@ class SportsTeamViewModel @Inject constructor(
 
     fun addFavTeam(favTeam: Team) {
         viewModelScope.launch {
-
             favTeamsRepository.addFavTeam(favTeam = favTeam)
         }
     }

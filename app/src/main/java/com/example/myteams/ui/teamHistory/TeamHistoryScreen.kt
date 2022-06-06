@@ -5,7 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.myteams.ui.SportsTeamViewModel
@@ -13,14 +16,13 @@ import com.example.myteams.ui.favTeams.ErrorContent
 import com.example.myteams.ui.favTeams.LoadingContent
 import com.example.myteams.util.Resource
 
-// todo may not be necessary
 @Composable
 fun TeamHistoryScreen(
     viewModel: SportsTeamViewModel,
     onNavigateBack: () -> Unit
 ) {
 
-    var teamMatches by remember { viewModel.teamMatches }
+    var teamMatches by viewModel.teamMatches
     LaunchedEffect(key1 = viewModel.teamMatches, block = {
         teamMatches = viewModel.teamMatches.value
     })

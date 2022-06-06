@@ -22,6 +22,10 @@ val teamNameColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) White else Color.DarkGray
 
+val matchNameColor: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) White else Color.DarkGray
+
 val basicTextColor: Color
     @Composable
     get() = if (isSystemInDarkTheme()) White else Color.Black
@@ -30,6 +34,9 @@ val displayFavTeamBackground: Color
     @Composable
     get() = if (isSystemInDarkTheme()) Color.DarkGray else LightGray
 
+val scoreBoradBackgound: Color
+    @Composable
+    get() = if (isSystemInDarkTheme()) VeryDarkGrey else Color.Gray
 
 val topAppBarContentColor: Color
     @Composable

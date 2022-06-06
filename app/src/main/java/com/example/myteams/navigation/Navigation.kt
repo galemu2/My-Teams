@@ -36,9 +36,8 @@ fun SetUpNavigation(
 
         teamHistoryComposable(
             viewModel = viewModel,
-            navController = navController,
         ){
             navController.popBackStack()
-        }
+         }
     }
 }

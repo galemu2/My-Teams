@@ -1,7 +1,6 @@
 package com.example.myteams.navigation.destinations
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
@@ -12,7 +11,6 @@ import com.example.myteams.util.Constants
 
 fun NavGraphBuilder.teamHistoryComposable(
     viewModel: SportsTeamViewModel,
-    navController: NavHostController,
     onNavigateBack: () -> Unit
 ) {
 
@@ -26,7 +24,7 @@ fun NavGraphBuilder.teamHistoryComposable(
         val arg = it.arguments?.getString(Constants.TEAM_ID)
 
         arg?.let { matchId ->
-            viewModel.listMatches(matchId = matchId)
+            viewModel.getTeamMatchHistory(matchId = matchId)
         }
         TeamHistoryScreen(
             viewModel = viewModel,

@@ -92,9 +92,6 @@ fun DisplayFavTeams(
     displaySnackBar: (Team) -> Unit,
     displayTeamHistory: (String) -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    // todo add snack bar with undo
-    val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
