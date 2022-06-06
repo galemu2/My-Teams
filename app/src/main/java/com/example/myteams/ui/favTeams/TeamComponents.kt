@@ -117,7 +117,7 @@ fun TeamName(
 ) {
 
     Text(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .border(width = 1.dp, color = Color.Gray, shape = RoundedCornerShape(4.dp))
