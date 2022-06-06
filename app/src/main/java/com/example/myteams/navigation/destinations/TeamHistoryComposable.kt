@@ -3,13 +3,13 @@ package com.example.myteams.navigation.destinations
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.myteams.ui.FavTeamsViewModel
+import com.example.myteams.ui.SportsTeamViewModel
 import com.example.myteams.ui.teamDetails.TeamHistoryScreen
 import com.example.myteams.util.Constants
 
 
 fun NavGraphBuilder.teamHistoryComposable(
-    viewModel: FavTeamsViewModel,
+    viewModel: SportsTeamViewModel,
     navController: NavHostController
 ) {
 

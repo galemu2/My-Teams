@@ -4,13 +4,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import com.example.myteams.ui.FavTeamsViewModel
+import com.example.myteams.ui.SportsTeamViewModel
 
 
 @ExperimentalMaterial3Api
 @Composable
 fun FavTeamScreen(
-    viewModel: FavTeamsViewModel,
+    viewModel: SportsTeamViewModel,
 ) {
 
     val searchAppBarOpenState by viewModel.searchAppBarOpenState
@@ -32,7 +32,7 @@ fun FavTeamScreen(
 
 @Composable
 fun FavTeamContent(
-    viewModel: FavTeamsViewModel,
+    viewModel: SportsTeamViewModel,
 ) {
 
     HandleTeamContent(

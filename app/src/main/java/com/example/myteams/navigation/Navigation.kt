@@ -7,8 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.example.myteams.navigation.destinations.favTeamComposable
 import com.example.myteams.navigation.destinations.teamHistoryComposable
-import com.example.myteams.ui.FavTeamsViewModel
-import com.example.myteams.util.Constants
+import com.example.myteams.ui.SportsTeamViewModel
 import com.example.myteams.util.Constants.FAV_TEAMS
 
 @ExperimentalMaterial3Api
@@ -16,7 +15,7 @@ import com.example.myteams.util.Constants.FAV_TEAMS
 @Composable
 fun SetUpNavigation(
     navController: NavHostController,
-    viewModel: FavTeamsViewModel
+    viewModel: SportsTeamViewModel
 ) {
 
 

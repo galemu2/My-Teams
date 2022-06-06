@@ -19,7 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myteams.R
-import com.example.myteams.ui.FavTeamsViewModel
+import com.example.myteams.ui.SportsTeamViewModel
 import com.example.myteams.ui.theme.TOP_APP_BAR_HEIGHT
 import com.example.myteams.ui.theme.topAppBarBackgroundColor
 import com.example.myteams.ui.theme.topAppBarContentColor
@@ -28,7 +28,7 @@ import com.example.myteams.util.Resource
 
 @Composable
 fun TeamsAppBar(
-    viewModel: FavTeamsViewModel,
+    viewModel: SportsTeamViewModel,
     searchAppBarOpenedState: Boolean,
     searchTextState: String
 ) {

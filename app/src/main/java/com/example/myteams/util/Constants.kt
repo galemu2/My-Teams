@@ -6,4 +6,7 @@ object Constants {
     const val SEARCH_TEAMS = "SEARCH_TEAMS"
     const val TEAM_DETAIL = "TEAM_DETAIL"
     const val TEAM_HISTORY = "TEAM_HISTORY"
+
+    const val DATABASE_TABLE = "fav_team_table"
+    const val DATABASE_NAME  ="fav_team"
 }
