@@ -27,6 +27,7 @@ class SportsTeamViewModel @Inject constructor(
 
     val searchTextState: MutableState<String> = mutableStateOf("")
     val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
+    val teamTobeDeleted:MutableState<Team?> = mutableStateOf(null)
 
     private val _searchTeam = mutableStateOf<Resource<Teams>>(Resource.Loading())
     val searchTeam: MutableState<Resource<Teams>>
