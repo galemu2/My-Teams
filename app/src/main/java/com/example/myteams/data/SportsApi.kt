@@ -1,6 +1,7 @@
 package com.example.myteams.data
 
 import com.example.myteams.BuildConfig
+import com.example.myteams.data.models.Matches
 import com.example.myteams.data.models.Teams
 import retrofit2.Response
 import retrofit2.http.GET
@@ -19,6 +20,13 @@ interface SportsApi {
         query: String,
     ): Response<Teams>
 
+
+    @GET("eventslast.php")
+    suspend fun getMatches(
+        @Query("id")
+        matchId: String
+    ): Response<Matches>
 }
+
 
 // API: https://www.thesportsdb.com/api/v1/json/50130162/searchteams.php?t=Arsenal

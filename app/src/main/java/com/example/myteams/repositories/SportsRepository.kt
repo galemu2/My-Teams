@@ -1,6 +1,7 @@
 package com.example.myteams.repositories
 
 import com.example.myteams.data.SportsApi
+import com.example.myteams.data.models.Matches
 import com.example.myteams.data.models.Teams
 import retrofit2.Response
 import javax.inject.Inject
@@ -15,5 +16,9 @@ class SportsRepository @Inject constructor(
         return api.getTeams(
             query = query
         )
+    }
+
+    suspend fun getMatches(matchId:String):Response<Matches>{
+        return api.getMatches(matchId = matchId)
     }
 }

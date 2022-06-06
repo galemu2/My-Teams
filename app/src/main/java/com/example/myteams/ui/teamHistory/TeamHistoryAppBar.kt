@@ -7,15 +7,15 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.myteams.R
+import com.example.myteams.ui.theme.topAppBarBackgroundColor
 import com.example.myteams.ui.theme.topAppBarContentColor
 
 
 @Composable
 fun TeamHistoryAppBar(
-    onNavigteBack: () -> Unit
+    onNavigateBack: () -> Unit
 ) {
 
     val text = stringResource(
@@ -23,18 +23,19 @@ fun TeamHistoryAppBar(
     )
 
     val back = stringResource(id = R.string.back)
-    TopAppBar(modifier = Modifier,
+    TopAppBar(
+        backgroundColor = topAppBarBackgroundColor,
         title = {
             Text(
                 text = text,
                 color = topAppBarContentColor
             )
         },
-        actions = {},
         navigationIcon = {
-            IconButton(onClick = { onNavigteBack() }) {
+            IconButton(onClick = { onNavigateBack() }) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowBack, contentDescription = back
+                    imageVector = Icons.Filled.ArrowBack, contentDescription = back,
+                    tint = topAppBarContentColor
                 )
             }
         })

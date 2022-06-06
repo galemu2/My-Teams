@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myteams.data.models.Matches
 import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.repositories.FavTeamsRepository
@@ -27,17 +28,38 @@ class SportsTeamViewModel @Inject constructor(
 
     val searchTextState: MutableState<String> = mutableStateOf("")
     val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
-    val teamTobeDeleted:MutableState<Team?> = mutableStateOf(null)
+    val teamTobeDeleted: MutableState<Team?> = mutableStateOf(null)
 
     private val _searchTeam = mutableStateOf<Resource<Teams>>(Resource.Loading())
     val searchTeam: MutableState<Resource<Teams>>
         get() = _searchTeam
 
-    fun searchFavTeam(searchQuery: String = "fc") {
+    fun searchFavTeam(searchQuery: String) {
         viewModelScope.launch {
             val res = repository.getTeams(query = searchQuery)
             _searchTeam.value = handleTeamSearch(res)
         }
+    }
+
+
+    private val _teamMatches = mutableStateOf<Resource<Matches>>(Resource.Loading())
+    val teamMatches: MutableState<Resource<Matches>>
+        get() = _teamMatches
+
+    fun listMatches(matchId:String){
+        viewModelScope.launch {
+            val res = repository.getMatches(matchId = matchId)
+            _teamMatches.value = handleMatchSearchSearch(res)
+        }
+    }
+
+    private fun handleMatchSearchSearch(res: Response<Matches>): Resource<Matches> {
+        if (res.isSuccessful) {
+            res.body()?.let { teams ->
+                return Resource.Success(teams)
+            }
+        }
+        return Resource.Error(message = res.message())
     }
 
     private fun handleTeamSearch(res: Response<Teams>): Resource<Teams> {

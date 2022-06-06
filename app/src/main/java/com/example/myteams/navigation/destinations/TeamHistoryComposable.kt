@@ -25,10 +25,11 @@ fun NavGraphBuilder.teamHistoryComposable(
 
         val arg = it.arguments?.getString(Constants.TEAM_ID)
 
+        arg?.let { matchId ->
+            viewModel.listMatches(matchId = matchId)
+        }
         TeamHistoryScreen(
             viewModel = viewModel,
-            navController = navController,
-            teamId = arg,
             onNavigateBack = onNavigateBack
         )
     }

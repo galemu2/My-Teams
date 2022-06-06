@@ -9,41 +9,64 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.navigation.NavHostController
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
+import com.example.myteams.ui.favTeams.ErrorContent
+import com.example.myteams.ui.favTeams.LoadingContent
+import com.example.myteams.util.Resource
 
 // todo may not be necessary
 @Composable
 fun TeamHistoryScreen(
     viewModel: SportsTeamViewModel,
-    navController: NavHostController,
-    teamId: String?,
     onNavigateBack: () -> Unit
 ) {
 
+    var teamMatches by remember { viewModel.teamMatches }
+    LaunchedEffect(key1 = viewModel.teamMatches, block = {
+        teamMatches = viewModel.teamMatches.value
+    })
 
     Scaffold(topBar = {
         TeamHistoryAppBar(
-            onNavigteBack = onNavigateBack
+            onNavigateBack = onNavigateBack
         )
     }) {
-        //   TeamDetailsContent(team =)
-
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = Color.Red),
         ) {
-            Text(
-                text = "Team History Screen: ${teamId ?: "null"}",
-                modifier = Modifier.fillMaxSize(),
-                textAlign = TextAlign.Center
-            )
+
+            when (teamMatches) {
+                is Resource.Success -> {
+
+
+                    teamMatches.data?.results?.let {
+                        // todo add match UI
+                        Text(
+                            text = "Team History Screen: ${it[0].strAwayTeam} ",
+                            modifier = Modifier.fillMaxSize(),
+                            textAlign = TextAlign.Center
+                        )
+                    } ?: ErrorContent()
+
+                }
+                is Resource.Error -> {
+                    ErrorContent()
+
+                }
+
+                is Resource.Loading -> {
+                    LoadingContent()
+                }
+            }
+
+
         }
     }
 }

@@ -2,7 +2,9 @@ package com.example.myteams.ui.favTeams
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +46,6 @@ fun EmptySearchContent() {
 }
 
 
-@Preview
 @Composable
 fun EmptyFavesContent() {
 
@@ -100,3 +101,24 @@ fun ErrorContent() {
     }
 }
 
+@Preview
+@Composable
+fun LoadingContent() {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+
+        CircularProgressIndicator(
+            modifier = Modifier.size(200.dp),
+            strokeWidth = 5.dp,
+            color = MediumGray
+        )
+
+    }
+}
