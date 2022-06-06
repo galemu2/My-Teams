@@ -1,6 +1,5 @@
 package com.example.myteams.ui.favTeams
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,6 +30,7 @@ import com.example.myteams.util.Resource
 fun HandleTeamContent(
     viewModel: SportsTeamViewModel,
     displaySnackBar: (Team) -> Unit,
+    displayTeamHistory: (String) -> Unit,
 ) {
 
     var favTeams by remember { mutableStateOf(emptyList<Team>()) }
@@ -76,7 +76,8 @@ fun HandleTeamContent(
             DisplayFavTeams(
                 favTeams = favTeams,
                 viewModel = viewModel,
-                displaySnackBar = displaySnackBar
+                displaySnackBar = displaySnackBar,
+                displayTeamHistory = displayTeamHistory
             )
         }
     }
@@ -88,7 +89,8 @@ fun HandleTeamContent(
 fun DisplayFavTeams(
     favTeams: List<Team>,
     viewModel: SportsTeamViewModel,
-    displaySnackBar: (Team) -> Unit
+    displaySnackBar: (Team) -> Unit,
+    displayTeamHistory: (String) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     // todo add snack bar with undo
@@ -117,16 +119,15 @@ fun DisplayFavTeams(
                 state = dismissState,
                 directions = setOf(DismissDirection.EndToStart),
                 dismissThresholds = { FractionalThreshold(fraction = 0.3f) },
-                background = {}
+                background = {
+                    Box(modifier = Modifier.padding(4.dp).fillMaxSize()
+                        .background(Color.DarkGray))
+                }
             ) {
                 TeamItemFaves(
                     team = team,
                     viewModel = viewModel,
-                    displayTeamHistory = {
-
-                        // todo used to navigate to team history
-                        Toast.makeText(context, "id: $it", Toast.LENGTH_SHORT).show()
-                    }
+                    displayTeamHistory = displayTeamHistory
                 )
             }
 

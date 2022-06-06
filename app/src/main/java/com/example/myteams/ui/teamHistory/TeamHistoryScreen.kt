@@ -1,4 +1,4 @@
-package com.example.myteams.ui.teamDetails
+package com.example.myteams.ui.teamHistory
 
 
 import androidx.compose.foundation.background
@@ -16,15 +16,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
+
 // todo may not be necessary
 @Composable
 fun TeamHistoryScreen(
     viewModel: SportsTeamViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    teamId: String?,
+    onNavigateBack: () -> Unit
 ) {
 
 
-    Scaffold(topBar = {}) {
+    Scaffold(topBar = {
+        TeamHistoryAppBar(
+            onNavigteBack = onNavigateBack
+        )
+    }) {
         //   TeamDetailsContent(team =)
 
         Surface(
@@ -33,7 +40,7 @@ fun TeamHistoryScreen(
                 .background(color = Color.Red),
         ) {
             Text(
-                text = "Team Details Screen",
+                text = "Team History Screen: ${teamId ?: "null"}",
                 modifier = Modifier.fillMaxSize(),
                 textAlign = TextAlign.Center
             )
@@ -60,7 +67,7 @@ fun TeamDetailsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            text = team.strDescriptionEN ?:""
+            text = team.strDescriptionEN ?: ""
         )
     }
 

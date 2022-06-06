@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import com.example.myteams.navigation.destinations.favTeamComposable
 import com.example.myteams.navigation.destinations.teamHistoryComposable
 import com.example.myteams.ui.SportsTeamViewModel
+import com.example.myteams.util.Constants
 import com.example.myteams.util.Constants.FAV_TEAMS
 
 @ExperimentalMaterialApi
@@ -28,13 +29,16 @@ fun SetUpNavigation(
 
         favTeamComposable(
             viewModel = viewModel,
-            navController = navController,
-
+            displayTeamHistory = {
+                navController.navigate(route = "${Constants.TEAM_HISTORY}/$it")
+            }
         )
 
         teamHistoryComposable(
             viewModel = viewModel,
-            navController = navController
-        )
+            navController = navController,
+        ){
+            navController.popBackStack()
+        }
     }
 }

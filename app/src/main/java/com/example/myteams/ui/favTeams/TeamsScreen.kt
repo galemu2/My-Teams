@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FavTeamScreen(
     viewModel: SportsTeamViewModel,
+    displayTeamHistory: (String) -> Unit,
 ) {
     val context = LocalContext.current
     val unknownError = stringResource(id = R.string.unknown_error)
@@ -57,11 +58,12 @@ fun FavTeamScreen(
         }) {
         FavTeamContent(
             viewModel = viewModel,
-        ) { team ->
-            viewModel.teamTobeDeleted.value = team
-            snackBarState = true
-//            viewModel.addFavTeam(team)
-        }
+            { team ->
+                viewModel.teamTobeDeleted.value = team
+                snackBarState = true
+            },
+            displayTeamHistory = displayTeamHistory
+        )
     }
 }
 
@@ -102,11 +104,13 @@ fun SportsSnackBar(
 fun FavTeamContent(
     viewModel: SportsTeamViewModel,
     displaySnackBar: (Team) -> Unit,
+    displayTeamHistory: (String) -> Unit,
 ) {
 
     HandleTeamContent(
         viewModel = viewModel,
-        displaySnackBar = displaySnackBar
+        displaySnackBar = displaySnackBar,
+        displayTeamHistory = displayTeamHistory
     )
 }
 
