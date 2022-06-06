@@ -30,6 +30,7 @@ import com.example.myteams.util.Resource
 @Composable
 fun HandleTeamContent(
     viewModel: SportsTeamViewModel,
+    displaySnackBar: (Team) -> Unit,
 ) {
 
     var favTeams by remember { mutableStateOf(emptyList<Team>()) }
@@ -72,7 +73,11 @@ fun HandleTeamContent(
         if (favTeams.isEmpty()) {
             EmptyFavesContent()
         } else {
-            DisplayFavTeams(favTeams = favTeams, viewModel = viewModel)
+            DisplayFavTeams(
+                favTeams = favTeams,
+                viewModel = viewModel,
+                displaySnackBar = displaySnackBar
+            )
         }
     }
 
@@ -82,9 +87,11 @@ fun HandleTeamContent(
 @Composable
 fun DisplayFavTeams(
     favTeams: List<Team>,
-    viewModel: SportsTeamViewModel
+    viewModel: SportsTeamViewModel,
+    displaySnackBar: (Team) -> Unit
 ) {
-
+    val scope = rememberCoroutineScope()
+    // todo add snack bar with undo
     val context = LocalContext.current
     LazyColumn(
         modifier = Modifier
@@ -102,8 +109,8 @@ fun DisplayFavTeams(
             if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
                 // delete from database
                 viewModel.deleteFavTeam(favTeam = team)
+                displaySnackBar(team)
             }
-
 
 
             SwipeToDismiss(
@@ -136,7 +143,6 @@ fun TeamItemFaves(
     displayTeamHistory: (String) -> Unit
 ) {
 
-    val context = LocalContext.current
 
     Row(
         modifier = Modifier
@@ -232,7 +238,8 @@ fun TeamItemSearch(
 
             viewModel.addFavTeam(favTeam = team)
             viewModel.searchAppBarOpenState.value = false
-
+            viewModel.searchTextState.value = ""
+            viewModel.searchTeam.value = Resource.Loading()
         }
     }
 
