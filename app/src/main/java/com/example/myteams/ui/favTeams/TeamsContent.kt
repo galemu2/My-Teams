@@ -34,6 +34,7 @@ import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.ui.SportsTeamViewModel
 import com.example.myteams.ui.theme.basicTextColor
+import com.example.myteams.ui.theme.contentBackground
 import com.example.myteams.ui.theme.displayFavTeamBackground
 import com.example.myteams.ui.theme.teamNameColor
 import com.example.myteams.util.Resource
@@ -65,14 +66,14 @@ fun HandleTeamContent(
     if (viewModel.searchAppBarOpenState.value) {
         when (teamSearch.value) {
             is Resource.Loading -> {
-                EmptyContent()
+                EmptySearchContent()
             }
             is Resource.Error -> {
                 ErrorContent()
             }
             is Resource.Success -> {
                 (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
-                    DisplayFavTeams(
+                    DisplaySearchTeams(
                         teams = teams,
                         viewModel = viewModel
                     )
@@ -80,25 +81,59 @@ fun HandleTeamContent(
             }
         }
     } else {
-        Text(text = "my teams", fontSize = 40.sp)
+
+        if (favTeams.isEmpty()) {
+            EmptyFavesContent()
+        } else {
+            DisplayFavTeams(favTeams = favTeams, viewModel = viewModel)
+        }
     }
 
 }
 
-
 @Composable
 fun DisplayFavTeams(
+    favTeams: List<Team>,
+    viewModel: SportsTeamViewModel
+) {
+
+    val context = LocalContext.current
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = contentBackground),
+    ) {
+        items(
+            items = favTeams,
+            key = { team -> team.idTeam }
+        ) { team ->
+            TeamItemFaves(
+                team = team,
+                viewModel = viewModel,
+                displayTeamHistory = {
+                    Toast.makeText(context, "id: $it", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun DisplaySearchTeams(
     teams: List<Team>,
     viewModel: SportsTeamViewModel,
 ) {
 
     LazyColumn(
-        modifier = Modifier,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = contentBackground),
     ) {
         items(
             items = teams,
+            key = { team -> team.idTeam }
         ) { team ->
-            TeamItem(
+            TeamItemSearch(
                 team = team,
                 viewModel = viewModel
             )
@@ -162,8 +197,71 @@ private fun MyButton(
     }
 }
 
+
 @Composable
-fun TeamItem(
+fun TeamItemFaves(
+    modifier: Modifier = Modifier,
+    team: Team,
+    viewModel: SportsTeamViewModel,
+    displayTeamHistory: (String) -> Unit
+) {
+
+    val context = LocalContext.current
+
+
+
+    Row(
+        modifier = Modifier
+            .padding(4.dp)
+            .border(
+                width = 1.dp,
+                color = Color.Gray,
+                shape =
+                RoundedCornerShape(4.dp)
+            )
+            .fillMaxWidth()
+            .background(color = displayFavTeamBackground)
+            .height(100.dp)
+            .clickable {
+                displayTeamHistory(team.idTeam)
+            },
+
+        ) {
+
+        TeamBadge(
+            modifier = Modifier.weight(1f),
+            badge = team.strTeamBadge ?: ""
+        )
+
+        Column(
+            modifier = Modifier
+                .padding(4.dp)
+                .weight(4f),
+        ) {
+            TeamName(
+                modifier = Modifier.weight(2f),
+                name = team.strTeam
+            )
+            SportName(
+                modifier = Modifier.weight(1f),
+                sportName = team.strSport ?: ""
+            )
+            LeagueName(
+                modifier = Modifier.weight(1f),
+                leagueName = team.strLeague ?: ""
+            )
+        }
+
+        TeamJersey(
+            modifier = Modifier.weight(1f),
+            teamJersey = team.strTeamJersey ?: ""
+        )
+    }
+
+}
+
+@Composable
+fun TeamItemSearch(
     modifier: Modifier = Modifier,
     team: Team,
     viewModel: SportsTeamViewModel,
@@ -179,27 +277,11 @@ fun TeamItem(
             updateDialogState = { dialogState = it },
         ) {
 
+            viewModel.addFavTeam(favTeam = team)
+            viewModel.searchAppBarOpenState.value = false
 
-            val favTam = Team(
-                idTeam = team.idTeam,
-                strDescriptionEN = team.strDescriptionEN,
-                strSport = team.strSport,
-                strLeague = team.strLeague,
-                strTeam = team.strTeam,
-                strTeamBadge = team.strTeamBadge,
-                strTeamJersey = team.strTeamJersey
-            )
-
-            viewModel.addFavTeam(favTeam = favTam)
-
-            Toast.makeText(
-                context,
-                "${team.idTeam}, ${team.strTeam}",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
-
 
     Row(
         modifier = Modifier
@@ -257,7 +339,6 @@ fun TeamJersey(modifier: Modifier = Modifier, teamJersey: String = "") {
 
     val placeHolder: Painter = painterResource(id = R.drawable.placeholder_jersey)
     val description = stringResource(id = R.string.team_jersey)
-    // todo stateless component that takes in string to load image
     val model = ImageRequest
         .Builder(context)
         .data(teamJersey)
@@ -276,7 +357,7 @@ fun TeamJersey(modifier: Modifier = Modifier, teamJersey: String = "") {
             )
             .border(
                 width = 1.dp,
-                color = Color.Transparent, // todo border color update
+                color = Color.Transparent,
                 shape = RoundedCornerShape(1.dp)
             ), contentAlignment = Alignment.Center
 
@@ -303,7 +384,6 @@ fun TeamBadge(modifier: Modifier = Modifier, badge: String = "") {
 
     val context = LocalContext.current
 
-    // todo stateless componenet that takes in string to load image
     val model = ImageRequest
         .Builder(context)
         .data(badge)
@@ -317,7 +397,7 @@ fun TeamBadge(modifier: Modifier = Modifier, badge: String = "") {
 
     Box(
         modifier = modifier
-            .size(100.dp) // todo size may be updated
+            .size(100.dp)
             .clip(shape = CircleShape)
             .background(color = Color.Transparent),
         contentAlignment = Alignment.Center

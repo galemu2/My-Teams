@@ -16,7 +16,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavHostController
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
-
+// todo may not be necessary
 @Composable
 fun TeamHistoryScreen(
     viewModel: SportsTeamViewModel,

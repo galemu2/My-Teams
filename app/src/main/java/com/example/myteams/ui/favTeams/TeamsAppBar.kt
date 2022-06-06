@@ -43,7 +43,7 @@ fun TeamsAppBar(
             onCloseClicked = {
                 viewModel.searchAppBarOpenState.value = false
                 viewModel.searchTextState.value = ""
-                viewModel.searchTeam.value = Resource.Loading() // todo show saved teams
+                viewModel.searchTeam.value = Resource.Loading()
             },
             onSearchClicked = { searchQuery ->
                 viewModel.searchFavTeam(searchQuery = searchQuery)

@@ -18,6 +18,7 @@ fun FavTeamScreen(
 
 
     Scaffold(
+
         topBar = {
             TeamsAppBar(
                 viewModel = viewModel,
