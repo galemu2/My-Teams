@@ -26,11 +26,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-
             MyTeamsTheme {
-                navController = rememberNavController()// rememberAnimatedNavController()
+                navController = rememberNavController()
 
-//                FavTeamScreen()
                 SetUpNavigation(
                     navController = navController,
                     viewModel = viewModel

@@ -1,5 +1,6 @@
 package com.example.myteams.ui.favTeams
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -15,11 +16,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myteams.R
 import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.ui.SportsTeamViewModel
+import com.example.myteams.ui.theme.MyTeamsTheme
+import com.example.myteams.ui.theme.basicTextColor
 import com.example.myteams.ui.theme.contentBackground
 import com.example.myteams.ui.theme.displayFavTeamBackground
 import com.example.myteams.util.Resource
@@ -33,9 +39,7 @@ fun HandleTeamContent(
     displayTeamHistory: (String) -> Unit,
 ) {
 
-    var favTeams by remember { mutableStateOf(emptyList<Team>()) }
-
-    val context = LocalContext.current
+    val getFavTeams by viewModel.getFavTeams.collectAsState()
 
     var teamSearch = remember {
         viewModel.searchTeam
@@ -45,13 +49,9 @@ fun HandleTeamContent(
         teamSearch = viewModel.searchTeam
     })
 
-    LaunchedEffect(key1 = viewModel.favTeams, block = {
-        viewModel.favTeams.collect {
-            favTeams = it
-        }
-    })
 
     if (viewModel.searchAppBarOpenState.value) {
+
         when (teamSearch.value) {
             is Resource.Loading -> {
                 EmptySearchContent()
@@ -65,21 +65,32 @@ fun HandleTeamContent(
                         teams = teams,
                         viewModel = viewModel
                     )
-                }
+                } ?: EmptySearchContent()
             }
         }
     } else {
 
-        if (favTeams.isEmpty()) {
-            EmptyFavesContent()
-        } else {
-            DisplayFavTeams(
-                favTeams = favTeams,
-                viewModel = viewModel,
-                displaySnackBar = displaySnackBar,
-                displayTeamHistory = displayTeamHistory
-            )
+        when (getFavTeams) {
+            is Resource.Success -> {
+                getFavTeams.data?.let { favTeams ->
+                    DisplayFavTeams(
+                        favTeams = favTeams,
+                        viewModel = viewModel,
+                        displaySnackBar = displaySnackBar,
+                        displayTeamHistory = displayTeamHistory
+                    )
+                } ?: EmptyFavesContent()
+            }
+            is Resource.Loading -> {
+
+                LoadingContent()
+            }
+            is Resource.Error -> {
+                ErrorContent()
+            }
+
         }
+
     }
 
 }
@@ -117,8 +128,12 @@ fun DisplayFavTeams(
                 directions = setOf(DismissDirection.EndToStart),
                 dismissThresholds = { FractionalThreshold(fraction = 0.3f) },
                 background = {
-                    Box(modifier = Modifier.padding(4.dp).fillMaxSize()
-                        .background(Color.DarkGray))
+                    Box(
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxSize()
+                            .background(Color.DarkGray)
+                    )
                 }
             ) {
                 TeamItemFaves(
@@ -299,14 +314,21 @@ fun SelectFavTeamDialog(
 
     if (openDialogState)
         AlertDialog(
+            backgroundColor = displayFavTeamBackground,
             onDismissRequest = {
                 updateDialogState(false)
             },
             title = {
-                Text(text = stringResource(id = R.string.save_team))
+                Text(
+                    text = stringResource(id = R.string.save_team), color = basicTextColor,
+                    fontSize = 30.sp
+                )
             },
             text = {
-                Text(text = stringResource(id = R.string.save_selected_team))
+                Text(
+                    text = stringResource(id = R.string.save_selected_team),
+                    color = basicTextColor
+                )
             },
             buttons = {
                 Row(
@@ -342,7 +364,25 @@ private fun MyButton(
             updateDialogState(false)
             insertToDatabase()
         }) {
-        Text(text = text)
+        Text(text = text, color = basicTextColor, fontWeight = FontWeight.Bold)
     }
 }
 
+@Preview(
+    showBackground = false,
+    name = "Night Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Preview(
+    showBackground = true,
+    name = "Day Mode",
+    uiMode = Configuration.UI_MODE_NIGHT_NO
+)
+@Composable
+fun PreviewMyButton() {
+
+    MyTeamsTheme {
+        SelectFavTeamDialog(openDialogState = true, updateDialogState = {}) {}
+    }
+
+}

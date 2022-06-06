@@ -7,19 +7,19 @@ import androidx.compose.material.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myteams.R
 import com.example.myteams.ui.theme.MediumGray
 
 @Composable
-fun EmptySearchContent() {
+fun EmptySearchContent(text: String = stringResource(id = R.string.no_teams)) {
 
     Column(
         modifier = Modifier
@@ -36,7 +36,7 @@ fun EmptySearchContent() {
             tint = MediumGray
         )
         Text(
-            text = stringResource(id = R.string.no_teams),
+            text = text,
             color = MediumGray,
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp
@@ -100,9 +100,11 @@ fun ErrorContent() {
     }
 }
 
-@Preview
 @Composable
 fun LoadingContent() {
+
+    val scope = rememberCoroutineScope()
+
 
     Column(
         modifier = Modifier

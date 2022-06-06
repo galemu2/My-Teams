@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.myteams.R
 import com.example.myteams.data.models.Result
 import com.example.myteams.ui.favTeams.EmptySearchContent
 import com.example.myteams.ui.theme.contentBackground
@@ -23,8 +25,7 @@ fun TeamHistoryContent(
 ) {
 
     if (matches.isEmpty()) {
-        // todo need custom empty matches content
-        EmptySearchContent()
+        EmptySearchContent(text = stringResource(id = R.string.empty_team_list))
     } else {
         LazyColumn(
             modifier = Modifier

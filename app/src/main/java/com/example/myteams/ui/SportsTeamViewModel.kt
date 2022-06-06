@@ -11,9 +11,8 @@ import com.example.myteams.repositories.FavTeamsRepository
 import com.example.myteams.repositories.SportsRepository
 import com.example.myteams.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -73,12 +72,25 @@ class SportsTeamViewModel @Inject constructor(
         return Resource.Error(message = res.message())
     }
 
-    var favTeams: StateFlow<List<Team>> = favTeamsRepository
-        .getAllFavTeams.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = emptyList()
-        )
+
+    private val _getFavTeams = MutableStateFlow<Resource<List<Team>>>(Resource.Loading())
+    val getFavTeams: StateFlow<Resource<List<Team>>>
+        get() = _getFavTeams
+    private fun getAllFavTeams() {
+        try {
+            viewModelScope.launch {
+                favTeamsRepository.getAllFavTeams.collect {
+                    _getFavTeams.value = Resource.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            _getFavTeams.value = Resource.Error(message = e.message.toString())
+        }
+    }
+    init {
+        getAllFavTeams()
+    }
+
 
     fun addFavTeam(favTeam: Team) {
         viewModelScope.launch {
