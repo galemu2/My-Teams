@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myteams.data.models.FavTeam
+import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.repositories.FavTeamsRepository
 import com.example.myteams.repositories.SportsRepository
@@ -48,21 +48,21 @@ class SportsTeamViewModel @Inject constructor(
         return Resource.Error(message = res.message())
     }
 
-    var favTeams: StateFlow<List<FavTeam>> = favTeamsRepository
+    var favTeams: StateFlow<List<Team>> = favTeamsRepository
         .getAllFavTeams.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
             initialValue = emptyList()
         )
 
-    fun addFavTeam(favTeam: FavTeam) {
+    fun addFavTeam(favTeam: Team) {
         viewModelScope.launch {
 
             favTeamsRepository.addFavTeam(favTeam = favTeam)
         }
     }
 
-    fun deleteFavTeam(favTeam: FavTeam) {
+    fun deleteFavTeam(favTeam: Team) {
         viewModelScope.launch {
             favTeamsRepository.deleteFavTeam(favTeam = favTeam)
         }

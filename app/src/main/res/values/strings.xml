@@ -7,14 +7,14 @@
     <string name="league_name">League</string>
 
     <string name="empty_team_list">Empty</string>
-    <string name="no_teams">No Teams</string>
+    <string name="no_teams">Search for Teams</string>
     <string name="error">Error</string>
     <string name="my_teams">My Teams</string>
     <string name="search_teams">Search Team</string>
     <string name="save_team">Save Team</string>
-    <string name="save_slected_team">Save team to favorite list</string>
+    <string name="save_selected_team">Save team to favorite list</string>
 
 
     <string name="cancel">Cancel</string>
-    <string name="select">Ok</string>
+    <string name="select">OK</string>
 </resources>

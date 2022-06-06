@@ -1,7 +1,7 @@
 package com.example.myteams.data
 
 import androidx.room.*
-import com.example.myteams.data.models.FavTeam
+import com.example.myteams.data.models.Team
 import kotlinx.coroutines.flow.Flow
 
 
@@ -9,11 +9,11 @@ import kotlinx.coroutines.flow.Flow
 interface FavTeamsDao {
 
     @Query("SELECT * FROM fav_team_table")
-    fun getAllFavTeams(): Flow<List<FavTeam>>
+    fun getAllFavTeams(): Flow<List<Team>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertFavTeam(favTeam: FavTeam)
+    suspend fun insertFavTeam(favTeam: Team)
 
     @Delete
-    suspend fun deleteFavTeam(favTeam: FavTeam)
+    suspend fun deleteFavTeam(favTeam: Team)
 }

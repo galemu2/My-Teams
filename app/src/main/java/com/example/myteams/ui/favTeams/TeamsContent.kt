@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.myteams.R
-import com.example.myteams.data.models.FavTeam
 import com.example.myteams.data.models.Team
 import com.example.myteams.data.models.Teams
 import com.example.myteams.ui.SportsTeamViewModel
@@ -45,7 +44,7 @@ fun HandleTeamContent(
     viewModel: SportsTeamViewModel,
 ) {
 
-    var favTeams by remember { mutableStateOf(emptyList<FavTeam>()) }
+    var favTeams by remember { mutableStateOf(emptyList<Team>()) }
 
     val context = LocalContext.current
 
@@ -124,7 +123,7 @@ fun SelectFavTeamDialog(
                 Text(text = stringResource(id = R.string.save_team))
             },
             text = {
-                Text(text = stringResource(id = R.string.save_slected_team))
+                Text(text = stringResource(id = R.string.save_selected_team))
             },
             buttons = {
                 Row(
@@ -181,7 +180,7 @@ fun TeamItem(
         ) {
 
 
-            val favTam = FavTeam(
+            val favTam = Team(
                 idTeam = team.idTeam,
                 strDescriptionEN = team.strDescriptionEN,
                 strSport = team.strSport,
@@ -222,7 +221,7 @@ fun TeamItem(
 
         TeamBadge(
             modifier = Modifier.weight(1f),
-            badge = team.strTeamBadge
+            badge = team.strTeamBadge ?: ""
         )
 
         Column(
@@ -236,17 +235,17 @@ fun TeamItem(
             )
             SportName(
                 modifier = Modifier.weight(1f),
-                sportName = team.strSport
+                sportName = team.strSport ?: ""
             )
             LeagueName(
                 modifier = Modifier.weight(1f),
-                leagueName = team.strLeague
+                leagueName = team.strLeague ?: ""
             )
         }
 
         TeamJersey(
             modifier = Modifier.weight(1f),
-            teamJersey = team.strTeamJersey
+            teamJersey = team.strTeamJersey ?: ""
         )
     }
 }

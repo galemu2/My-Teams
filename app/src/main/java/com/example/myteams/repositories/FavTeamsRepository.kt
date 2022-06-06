@@ -1,7 +1,7 @@
 package com.example.myteams.repositories
 
 import com.example.myteams.data.FavTeamsDao
-import com.example.myteams.data.models.FavTeam
+import com.example.myteams.data.models.Team
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -12,13 +12,13 @@ class FavTeamsRepository @Inject constructor(
 ) {
 
 
-    var getAllFavTeams: Flow<List<FavTeam>> = dao.getAllFavTeams()
+    var getAllFavTeams: Flow<List<Team>> = dao.getAllFavTeams()
 
-    suspend fun addFavTeam(favTeam: FavTeam) {
+    suspend fun addFavTeam(favTeam: Team) {
         dao.insertFavTeam(favTeam = favTeam)
     }
 
-    suspend fun deleteFavTeam(favTeam: FavTeam) {
+    suspend fun deleteFavTeam(favTeam: Team) {
         dao.deleteFavTeam(favTeam = favTeam)
     }
 }

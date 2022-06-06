@@ -60,7 +60,7 @@ fun TeamDetailsContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
-            text = team.strDescriptionEN
+            text = team.strDescriptionEN ?:""
         )
     }
 
