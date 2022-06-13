@@ -24,10 +24,10 @@ class SportsTeamViewModel @Inject constructor(
     private val favTeamsRepository: FavTeamsRepository
 ) : ViewModel() {
 
-
     val searchTextState: MutableState<String> = mutableStateOf("")
     val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
     val teamTobeDeleted: MutableState<Team?> = mutableStateOf(null)
+
 
     private val _searchTeam = mutableStateOf<Resource<Teams>>(Resource.Loading())
     val searchTeam: MutableState<Resource<Teams>>
@@ -35,32 +35,17 @@ class SportsTeamViewModel @Inject constructor(
 
     fun searchFavTeam(searchQuery: String) {
         viewModelScope.launch {
-            val res = repository.getTeams(query = searchQuery)
-            _searchTeam.value = handleTeamSearch(res)
-        }
-    }
 
-
-    private val _teamMatches = mutableStateOf<Resource<Matches>>(Resource.Loading())
-    val teamMatches: MutableState<Resource<Matches>>
-        get() = _teamMatches
-
-    fun getTeamMatchHistory(matchId: String) {
-
-        viewModelScope.launch {
-            val res = repository.getMatches(matchId = matchId)
-            _teamMatches.value = handleMatchSearchSearch(res)
-        }
-    }
-
-
-    private fun handleMatchSearchSearch(res: Response<Matches>): Resource<Matches> {
-        if (res.isSuccessful) {
-            res.body()?.let { teams ->
-                return Resource.Success(teams)
+            try {
+                val res = repository.getTeams(query = searchQuery)
+                _searchTeam.value = handleTeamSearch(res)
+            } catch (
+                e: Exception
+            ) {
+                _searchTeam.value = Resource.Error(message = e.message ?: "Unknown Error")
             }
+
         }
-        return Resource.Error(message = res.message())
     }
 
     private fun handleTeamSearch(res: Response<Teams>): Resource<Teams> {
@@ -73,9 +58,40 @@ class SportsTeamViewModel @Inject constructor(
     }
 
 
+    // team match search
+    private val _teamMatches = mutableStateOf<Resource<Matches>>(Resource.Loading())
+    val teamMatches: MutableState<Resource<Matches>>
+        get() = _teamMatches
+
+    fun getTeamMatchHistory(matchId: String) {
+
+        viewModelScope.launch {
+            try {
+                val res = repository.getMatches(matchId = matchId)
+                _teamMatches.value = matchSearchSearch(res)
+            } catch (e: Exception) {
+                _teamMatches.value = Resource.Error(message = e.message ?: "Unknon error")
+            }
+
+
+        }
+    }
+
+    private fun matchSearchSearch(res: Response<Matches>): Resource<Matches> {
+        if (res.isSuccessful) {
+            res.body()?.let { teams ->
+                return Resource.Success(teams)
+            }
+        }
+        return Resource.Error(message = res.message())
+    }
+
+
+    // fav teams
     private val _getFavTeams = MutableStateFlow<Resource<List<Team>>>(Resource.Loading())
     val getFavTeams: StateFlow<Resource<List<Team>>>
         get() = _getFavTeams
+
     private fun getAllFavTeams() {
         try {
             viewModelScope.launch {
@@ -87,10 +103,6 @@ class SportsTeamViewModel @Inject constructor(
             _getFavTeams.value = Resource.Error(message = e.message.toString())
         }
     }
-    init {
-        getAllFavTeams()
-    }
-
 
     fun addFavTeam(favTeam: Team) {
         viewModelScope.launch {
@@ -104,4 +116,7 @@ class SportsTeamViewModel @Inject constructor(
         }
     }
 
+    init {
+        getAllFavTeams()
+    }
 }

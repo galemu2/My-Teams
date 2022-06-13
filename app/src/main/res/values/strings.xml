@@ -8,7 +8,7 @@
 
     <string name="empty_team_list">Empty</string>
     <string name="no_teams">Search for Teams</string>
-    <string name="error">Error</string>
+    <string name="error">Unknown Error</string>
     <string name="my_teams">My Teams</string>
     <string name="search_teams">Search Team</string>
     <string name="save_team">Save Team</string>

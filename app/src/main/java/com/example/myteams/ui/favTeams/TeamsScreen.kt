@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import com.example.myteams.R
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
