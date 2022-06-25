@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,7 +50,7 @@ fun HandleTeamContent(
 
 
     if (viewModel.searchAppBarOpenState.value) {
-
+        // todo show empty search results
         when (teamSearch.value) {
             is Resource.Loading -> {
                 EmptySearchContent()
@@ -61,6 +60,8 @@ fun HandleTeamContent(
             }
             is Resource.Success -> {
                 (teamSearch.value as Resource.Success<Teams>).data?.teams?.let { teams ->
+
+
                     DisplaySearchTeams(
                         teams = teams,
                         viewModel = viewModel
@@ -77,7 +78,7 @@ fun HandleTeamContent(
                         favTeams = favTeams,
                         viewModel = viewModel,
                         displaySnackBar = displaySnackBar,
-                        displayTeamHistory = displayTeamHistory
+                        displayTeamHistory = displayTeamHistory,
                     )
                 } ?: EmptyFavesContent()
             }
@@ -100,8 +101,8 @@ fun HandleTeamContent(
 fun DisplayFavTeams(
     favTeams: List<Team>,
     viewModel: SportsTeamViewModel,
+    displayTeamHistory: (String) -> Unit,
     displaySnackBar: (Team) -> Unit,
-    displayTeamHistory: (String) -> Unit
 ) {
 
     if (favTeams.isEmpty()) {
@@ -121,9 +122,9 @@ fun DisplayFavTeams(
                 val dismissDirection = dismissState.dismissDirection
                 val isDismissed = dismissState.isDismissed(DismissDirection.EndToStart)
                 if (isDismissed && dismissDirection == DismissDirection.EndToStart) {
-                    // delete from database
-                    viewModel.deleteFavTeam(favTeam = team)
                     displaySnackBar(team)
+                    viewModel.deleteFavTeam(favTeam = team)
+
                 }
 
 
@@ -143,8 +144,9 @@ fun DisplayFavTeams(
                     TeamItemFaves(
                         team = team,
                         viewModel = viewModel,
-                        displayTeamHistory = displayTeamHistory
-                    )
+                        displayTeamHistory = displayTeamHistory,
+
+                        )
                 }
 
             }
@@ -157,8 +159,9 @@ fun TeamItemFaves(
     modifier: Modifier = Modifier,
     team: Team,
     viewModel: SportsTeamViewModel,
-    displayTeamHistory: (String) -> Unit
-) {
+    displayTeamHistory: (String) -> Unit,
+
+    ) {
 
 
     Row(
@@ -242,8 +245,6 @@ fun TeamItemSearch(
     team: Team,
     viewModel: SportsTeamViewModel,
 ) {
-
-    val context = LocalContext.current
 
     var dialogState by remember { mutableStateOf(false) }
 

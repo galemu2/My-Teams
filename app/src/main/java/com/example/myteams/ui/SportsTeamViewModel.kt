@@ -11,6 +11,7 @@ import com.example.myteams.repositories.FavTeamsRepository
 import com.example.myteams.repositories.SportsRepository
 import com.example.myteams.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class SportsTeamViewModel @Inject constructor(
 
     val searchTextState: MutableState<String> = mutableStateOf("")
     val searchAppBarOpenState: MutableState<Boolean> = mutableStateOf(false)
-    val teamTobeDeleted: MutableState<Team?> = mutableStateOf(null)
+    var teamTobeDeleted: MutableState<Team?> = mutableStateOf(null)
 
 
     private val _searchTeam = mutableStateOf<Resource<Teams>>(Resource.Loading())
@@ -56,7 +57,6 @@ class SportsTeamViewModel @Inject constructor(
         }
         return Resource.Error(message = res.message())
     }
-
 
     // team match search
     private val _teamMatches = mutableStateOf<Resource<Matches>>(Resource.Loading())
@@ -105,13 +105,13 @@ class SportsTeamViewModel @Inject constructor(
     }
 
     fun addFavTeam(favTeam: Team) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             favTeamsRepository.addFavTeam(favTeam = favTeam)
         }
     }
 
     fun deleteFavTeam(favTeam: Team) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             favTeamsRepository.deleteFavTeam(favTeam = favTeam)
         }
     }

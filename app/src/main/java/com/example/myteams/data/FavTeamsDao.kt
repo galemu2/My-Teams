@@ -11,7 +11,7 @@ interface FavTeamsDao {
     @Query("SELECT * FROM fav_team_table")
     fun getAllFavTeams(): Flow<List<Team>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFavTeam(favTeam: Team)
 
     @Delete

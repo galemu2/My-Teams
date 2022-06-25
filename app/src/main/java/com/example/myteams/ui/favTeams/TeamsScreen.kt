@@ -1,16 +1,14 @@
 package com.example.myteams.ui.favTeams
 
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.material.*
+import android.util.Log
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Scaffold
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import com.example.myteams.R
 import com.example.myteams.data.models.Team
 import com.example.myteams.ui.SportsTeamViewModel
-import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedMutableState")
 @ExperimentalMaterialApi
@@ -20,37 +18,29 @@ fun FavTeamScreen(
     viewModel: SportsTeamViewModel,
     displayTeamHistory: (String) -> Unit,
 ) {
-    val context = LocalContext.current
-    val unknownError = stringResource(id = R.string.unknown_error)
 
     val searchAppBarOpenState by viewModel.searchAppBarOpenState
     val searchTextState by viewModel.searchTextState
 
-    var snackBarState by remember { mutableStateOf(false) }
     val scaffoldState = rememberScaffoldState()
+    var snackBarState by remember { mutableStateOf(false) }
 
-    var teamToBeDeleted by remember {
-        viewModel.teamTobeDeleted
-    }
-
-    LaunchedEffect(key1 = true, block = {
-        teamToBeDeleted = viewModel.teamTobeDeleted.value
-
-    })
     SportsSnackBar(
-        snackBarState = snackBarState,
         scaffoldState = scaffoldState,
+        snackBarState = snackBarState,
         updateSnackBarState = {
-            snackBarState = it
+            snackBarState = false
         },
         unDoAction = {
-            if (teamToBeDeleted != null) {
-                viewModel.addFavTeam(teamToBeDeleted!!)
-                viewModel.teamTobeDeleted.value = null
-                scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+            if (viewModel.teamTobeDeleted.value != null) {
+                viewModel.addFavTeam(favTeam = viewModel.teamTobeDeleted.value!!)
+                Log.d("TAG", "SportsSnackBar:${viewModel.teamTobeDeleted.value}")
             } else {
-                Toast.makeText(context, unknownError, Toast.LENGTH_SHORT).show()
+                Log.d("TAG", "SportsSnackBar: teamTobeDeleted == null")
+
             }
+            scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
+
         }
     )
 
@@ -66,42 +56,14 @@ fun FavTeamScreen(
         }) {
         FavTeamContent(
             viewModel = viewModel,
-            { team ->
-                viewModel.teamTobeDeleted.value = team
+            displaySnackBar = { team ->
                 snackBarState = true
+                viewModel.teamTobeDeleted.value = team.copy()
+
             },
-            displayTeamHistory = displayTeamHistory
+            displayTeamHistory = displayTeamHistory,
         )
     }
-}
-
-@Composable
-fun SportsSnackBar(
-    snackBarState: Boolean,
-    updateSnackBarState: (Boolean) -> Unit,
-    scaffoldState: ScaffoldState,
-    unDoAction: () -> Unit
-) {
-
-    val scope = rememberCoroutineScope()
-    val deleteTeam = stringResource(id = R.string.delete_team)
-    val undo = stringResource(id = R.string.undo)
-    if (snackBarState)
-        LaunchedEffect(key1 = snackBarState,
-            block =
-            {
-                scope.launch {
-                    val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                        message = deleteTeam,
-                        actionLabel = undo
-                    )
-
-                    updateSnackBarState(false)
-                    if (snackBarResult == SnackbarResult.ActionPerformed) {
-                        unDoAction()
-                    }
-                }
-            })
 }
 
 @ExperimentalMaterialApi
@@ -116,7 +78,7 @@ fun FavTeamContent(
     HandleTeamContent(
         viewModel = viewModel,
         displaySnackBar = displaySnackBar,
-        displayTeamHistory = displayTeamHistory
+        displayTeamHistory = displayTeamHistory,
     )
 }
 
