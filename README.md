@@ -14,7 +14,7 @@ Api Key was obtained from [TheSportsDB.com](https://www.thesportsdb.com/api.php)
 2. Place Api key in `gradle.properties` file
 
   ```
-   API_KEY="your pixabay api key"
+   API_KEY="your SportsDB api key"
   ```
 
 3. Add following line in app level `build.gradle` file,
